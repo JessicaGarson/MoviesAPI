@@ -11,19 +11,25 @@
 #       How will your program behave when no movies are returned?
 #       How will your program behave with works like "the" in the title?
 
-import requests 
+import requests
+import json
 
 requested_movie = raw_input("What movie do you want to check? ")
 
 link_to_get = "http://bechdeltest.com/api/v1/getMoviesByTitle?title={0}".format(requested_movie).replace(" ", "+")
 
-print link_to_get
+#print link_to_get
 
 response = requests.get(link_to_get).json()
-print response 
+#print response
+
+#fixing "the" problem
+requested_movie = requested_movie.strip('The')
+
+print "Movie and and score:"
 
 for movie in response: 
-    print movie['title'], movie['rating'] 
+    print movie['title'], movie['rating']
 
 # Goal 2:
 #   Check to see if the user input is a movie title or an ImdbID and use the proper endpoint
@@ -35,8 +41,26 @@ if response == []:
 #is it an idmbID 
 is_imdb = requested_movie.isdigit()
 
+if is_imdb == True:
+   print "Looks like you are using a IMDBid, use a movie name"
+
+# Goal 3:
+# Integrate this with the Open Movie Database API: http://www.omdbapi.com/
+#   Display all of the details from both APIs when searching for a movie.
+#   Note that you may need to prefix your ImdbIDs with 'tt' to get the search to work.
+
+link_to_get_imdb = "http://www.omdbapi.com/?t={0}".format(requested_movie).replace(" ", "%20")
+
+print link_to_get_imdb
+
+imdb_response = requests.get(link_to_get_imdb).json()
 
 print imdb_response
+
+print "Movie info from IMDB:"
+
+for thing in imdb_response:
+   print thing['Rated']
 
 
 # Copy these URLs into your browser!
